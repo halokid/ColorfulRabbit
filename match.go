@@ -2,7 +2,9 @@ package ColorfulRabbit
 
 import (
   "fmt"
+  "math/rand"
   "strconv"
+  "time"
 )
 
 // 容量大小， kb转gb
@@ -19,6 +21,14 @@ func KbToGb(kb int64) float64 {
   kbxS := fmt.Sprintf("%.1f", kbx)
   kbxSF, _ := strconv.ParseFloat(kbxS, 64)
   return kbxSF
+}
+
+
+// 获取区间随机数
+func RandInt(min, max int) int {
+  rand.Seed(time.Now().Unix())
+  randNum := rand.Intn(max - min) + min
+  return randNum
 }
 
 
