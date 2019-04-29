@@ -1,5 +1,7 @@
 package ColorfulRabbit
-
+/**
+数学算法函数
+ */
 import (
   "fmt"
   "math/rand"

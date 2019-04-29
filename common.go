@@ -1,5 +1,10 @@
 package ColorfulRabbit
 
+/**
+ 常规的函数
+ */
+
+
 // 获取slice某元素的index
 func IndexOf(element string, data []string) (int) {
   for k, v := range data {

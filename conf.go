@@ -1,5 +1,7 @@
 package ColorfulRabbit
-
+/**
+配置类使用的函数
+ */
 import "github.com/Unknwon/goconfig"
 
 type Conf struct {

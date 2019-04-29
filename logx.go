@@ -1,5 +1,7 @@
 package ColorfulRabbit
-
+/**
+日志类使用函数
+ */
 import (
   "log"
   "os"
