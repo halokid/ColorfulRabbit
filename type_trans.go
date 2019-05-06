@@ -9,6 +9,7 @@ import (
 类型转换函数
  */
 
+ // 字符串转json
 func StrToJson(s string) *simplejson.Json {
   sJs, err := simplejson.NewJson([]byte(s))
   CheckFatal(err, "string change to json error")
