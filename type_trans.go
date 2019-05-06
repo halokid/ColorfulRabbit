@@ -24,3 +24,9 @@ func IntToInt64(i int) int64 {
   return iInt64
 }
 
+
+// float64转string，保留几位小数
+func Flo64ToStr(f float64, prec int) string {
+  fStr := strconv.FormatFloat(f, 'f', prec, 64)
+  return fStr
+}
