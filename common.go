@@ -32,6 +32,15 @@ func HasKey(key string, mapx map[string]map[string]interface{}) bool {
 }
 
 
+func HasKeyInt(key string, mapx map[string]map[string]int) bool {
+  if _, ok := mapx[key]; ok {
+    return true
+  } else {
+    return false
+  }
+}
+
+
 // 是否包含某字符串
 func Contain(checkStr string, patt string) bool {
   if strings.Index(checkStr, patt) == -1 {
