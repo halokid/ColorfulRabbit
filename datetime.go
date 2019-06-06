@@ -11,3 +11,9 @@ func GetDateHour() string {
   datehStr := time.Now().Format("2006010215")
   return datehStr
 }
+
+func GetNowMin() int {
+  // get minute now
+  t := time.Now()
+  return t.Minute()
+}
