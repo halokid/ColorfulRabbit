@@ -17,3 +17,10 @@ func GetNowMin() int {
   t := time.Now()
   return t.Minute()
 }
+
+func GetMinBefore(i int) string {
+  now := time.Now()
+  minBrf := now.Add(time.Duration(-i) * time.Minute)
+  minBrfStr := minBrf.Format("2006-01-02 15:04")
+  return minBrfStr
+}
