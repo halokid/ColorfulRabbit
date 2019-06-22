@@ -8,7 +8,8 @@ import (
 )
 
 type Logx struct {
-  DebugFlag  bool 
+  DebugFlag  bool
+  LogFlFlag    bool
 }
 
 // 普通错误检查
@@ -31,4 +32,18 @@ func (lgx *Logx) DebugPrint(output ...interface{}) {
   if lgx.DebugFlag {
     log.Printf("[DEBUG] ---------------- %v\n", output)
   }
+
+  if lgx.LogFlFlag {
+    logFileHandle, err := os.OpenFile("./debug_log.txt", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0777)
+    CheckError(err)
+    sc := ""
+    for _, v := range output {
+      sc += v.(string)
+    }
+    _, _ = logFileHandle.Write([]byte(sc))
+    logFileHandle.Close()
+  }
 }
+
+
+

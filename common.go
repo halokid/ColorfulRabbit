@@ -1,8 +1,8 @@
 package ColorfulRabbit
 
 import (
-  "os"
   "strings"
+  "time"
 )
 
 /**
@@ -33,6 +33,7 @@ func HasKey(key string, mapx map[string]map[string]interface{}) bool {
 
 
 func HasKeyInt(key string, mapx map[string]map[string]int) bool {
+  // 二维map是否包含key
   if _, ok := mapx[key]; ok {
     return true
   } else {
@@ -42,6 +43,7 @@ func HasKeyInt(key string, mapx map[string]map[string]int) bool {
 
 
 func HasKeyIntSig(key string, mapx map[string]int) bool {
+  // 一维map是否包含key
   if _, ok := mapx[key]; ok {
     return true
   } else {
@@ -50,8 +52,8 @@ func HasKeyIntSig(key string, mapx map[string]int) bool {
 }
 
 
-// 是否包含某字符串
 func Contain(checkStr string, patt string) bool {
+  // 是否包含某字符串
   if strings.Index(checkStr, patt) == -1 {
     return false
   } else {
@@ -59,17 +61,15 @@ func Contain(checkStr string, patt string) bool {
   }
 }
 
-// 判断文件是否存在
-func PathExists(path string) bool {
- _, err := os.Stat(path)
- if err == nil {
-   return true
- }
- if os.IsNotExist(err) {
-   return false
- }
- return false
+
+func DurTime(t1 time.Time, t2 time.Time) time.Duration {
+  tDur := t2.Sub(t1)
+  return tDur
 }
+
+
+
+
 
 
 
