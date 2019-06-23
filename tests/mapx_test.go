@@ -90,6 +90,93 @@ func pattx(iter interface{}) {
   }
 }
 
+func pattAll(iter ...interface{}) {
+  //fmt.Println(iter)
+
+  //t := reflect.TypeOf(iter)
+  //fmt.Println(t)
+
+  //vx := iter.(map[interface{}]interface{})
+  //vx := iter
+
+  //for i, v := range vx {
+  //for i, v := range iter {
+  //  fmt.Println(i, "--------", v)
+  //}
+
+  for _, x := range iter {
+    switch xx := x.(type) {
+    case string:
+      fmt.Println(xx)
+    case map[int]string:
+      fmt.Println("yyyy")
+    default:
+      fmt.Println("default deal")
+    }
+  }
+}
+
+func TestPattAll(t *testing.T) {
+  m := make(map[int]string)
+
+  m[1] = "hello"
+  m[2] = "world"
+
+  pattAll(m)
+}
+
+
+type User struct {
+  Id      int
+  Name    string
+}
+
+
+type UserT interface {
+  GetUser()
+}
+
+func (u User)GetUser() User {
+  //u := User{Id: 88,  Name: "yy"}
+  return u
+}
+
+
+func pattyy(i interface{})  {
+  //t := reflect.TypeOf(i).Implements(i)
+  //fmt.Println(t)
+
+  ix := i.(interface{})
+  fmt.Println(reflect.TypeOf(ix))
+
+  mx := make(map[int]interface{})
+
+  mx[0] = ix
+  fmt.Println(mx)
+
+
+  u := User{Id:  99,  Name: "xx"}
+  mu := make(map[int]User)
+
+  mu[0] = u
+
+  // 这里会提示 invalid type assertion: i1.(T1) (non-interface type *T1 on left)
+  //ux := u.(interface{})
+
+  // 这里会提示 invalid type assertion: i1.(T1) (non-interface type *T1 on left)
+  //ux := u.(User)
+
+  var ui UserT
+  uix := ui.(interface{})
+  mx[1] = uix
+  fmt.Println(mx)
+}
+
+func TestPattyy(t *testing.T) {
+  i := 10
+  pattyy(i)
+}
+
 
 
 
