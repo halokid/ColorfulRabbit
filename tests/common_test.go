@@ -2,7 +2,7 @@ package tests
 
 import (
   "fmt"
-  "github.com/r00tjimmy/ColorfulRabbit"
+  "github.com/halokid/ColorfulRabbit"
   "testing"
   "time"
   "unsafe"
