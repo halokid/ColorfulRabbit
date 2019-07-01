@@ -14,8 +14,8 @@ var logx = &Logx{
   DebugFlag:  true,
 }
 
-// 获取开发环境
 func (cf *Conf) GetEnv() string {
+  // 获取开发环境
   cFile, err := goconfig.LoadConfigFile(cf.EnvFile)
   CheckFatal(err, "load env file error")
 
@@ -26,8 +26,8 @@ func (cf *Conf) GetEnv() string {
 
 
 
-// 根据配置文件key获取值
 func (cf *Conf) GetVal(key string) string {
+  // 根据开发环境配置文件的key获取值
   env := cf.GetEnv()
   //key := env + "_" + keyName
 
@@ -38,6 +38,15 @@ func (cf *Conf) GetVal(key string) string {
   return val
 }
 
+
+func GetValx(filePath, sec, key string) string {
+  // 获取指定的配置文件的配置值
+  c, err := goconfig.LoadConfigFile(filePath)
+  CheckFatal(err, "no conf file")
+  val, err := c.GetValue(sec, key)
+  CheckFatal(err, "no key " + key + " in conf file at section " + sec)
+  return val
+}
 
 
 
