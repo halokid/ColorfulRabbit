@@ -72,6 +72,19 @@ func Flo64ToInt(f float64) int {
   return fInt
 }
 
+func StrToBytes(s string) []byte {
+  // string 转 []byte
+  sby := []byte(s)
+  return sby
+}
+
+
+func BytesToStr(sby []byte) string {
+  // []byte to string
+  s := string(sby[:])
+  return s
+}
+
 
 
 
