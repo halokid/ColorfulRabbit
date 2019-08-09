@@ -31,6 +31,15 @@ func HasKey(key string, mapx map[string]map[string]interface{}) bool {
   }
 }
 
+func HasKeyCom(key string, mapx map[string]interface{}) bool {
+  if _, ok := mapx[key]; ok {
+    return true
+  } else {
+    return false
+  }
+}
+
+
 
 func HasKeyInt(key string, mapx map[string]map[string]int) bool {
   // 二维map是否包含key

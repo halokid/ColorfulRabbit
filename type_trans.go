@@ -39,6 +39,14 @@ func IntToStr(i int) string {
    return s
 }
 
+func Int64ToStr(i int64) string {
+   // int64 转 string
+   ii := int(i)
+   s := strconv.Itoa(ii)
+   return s
+}
+
+
 func StrToFlo64(s string) float64 {
   // string 转  float64
   f, err := strconv.ParseFloat(s, 64)
