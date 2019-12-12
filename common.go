@@ -20,6 +20,16 @@ func IndexOf(element string, data []string) (int) {
   return -1 //not found.
 }
 
+func IndexOfI(element int, data []int) (int) {
+  for k, v := range data {
+    if element == v {
+      return k
+    }
+  }
+  return -1 //not found.
+}
+
+
 
 // 判断map中key是否存在
 //func HasKey(key string, mapx map[string]interface{}) bool {
