@@ -34,15 +34,18 @@ func OsExecOut(cmdStr string)  {
   var cmdSplTr []string
   //cmdSplTr := make([]string, 0)
   for _, v := range cmdSpl {
-    fmt.Println(v, len(v))
+    //fmt.Println(v, len(v))
     vx := strings.Trim(v, " ")
-    fmt.Println(len(vx))
+    //fmt.Println(len(vx))
+    if len(v) == 0 {
+      continue
+    }
     cmdSplTr = append(cmdSplTr, vx)
-    fmt.Println("----------------------")
+    //fmt.Println("----------------------")
   }
-  fmt.Println(cmdSplTr)
+  //fmt.Println(cmdSplTr)
   cmdArgs := cmdSplTr[1:]
-  fmt.Println(cmdArgs)
+  //fmt.Println(cmdArgs)
   //os.Exit(11)
   cmdx := exec.Command(cmdSplTr[0], cmdArgs...)
   stdout, err := cmdx.StdoutPipe()
