@@ -34,9 +34,9 @@ func OsExecOut(cmdStr string)  {
   for i, v := range cmdSpl {
     cmdSpl[i] = strings.Trim(v, " ")
   }
-  //fmt.Println(cmdSpl)
+  fmt.Println(cmdSpl)
   cmdArgs := cmdSpl[1:]
-  //fmt.Println(cmdArgs)
+  fmt.Println(cmdArgs)
   //os.Exit(11)
   cmdx := exec.Command(cmdSpl[0], cmdArgs...)
   stdout, err := cmdx.StdoutPipe()
