@@ -32,7 +32,7 @@ func OsExecOut(cmdStr string)  {
   fmt.Println("开始执行命令", cmdStr)
   cmdSpl := strings.Split(cmdStr, " ")
   for i, v := range cmdSpl {
-    cmdSpl[i] = strings.Trim(cmdSpl[i], " ")
+    cmdSpl[i] = strings.Trim(v, " ")
   }
   //fmt.Println(cmdSpl)
   cmdArgs := cmdSpl[1:]
