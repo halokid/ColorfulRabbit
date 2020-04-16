@@ -6,13 +6,43 @@ import (
 )
 
 var (
-  Pool *redis.Pool
+  RdsTyp    int         // 0 for pool, 1 for conn
+  RdsPool *redis.Pool
+  RdsConn redis.Conn
 )
 
+func InitRdsPool(host, port, pwd string, db int) {
+  RdsPool = &redis.Pool{
+    MaxIdle:        50,
+    MaxActive:      10000,
+    Dial: func() (redis.Conn, error) {
+      conn, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
+      CheckFatal(err, "----------------- redis pool error")
+      return conn, err
+    },
+  }
+  RdsTyp = 0
+}
 
-func Ping() error {
+func InitRdsConn(host, port, pwd string, db int) {
+  var err error
+  RdsConn, err = redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
+  CheckFatal(err, "----------------- redis conn error")
+  RdsTyp = 1
+  //return RdsConn, err
+}
 
-  conn := Pool.Get()
+func getConn() redis.Conn {
+  if RdsTyp == 0 {
+    return RdsPool.Get()
+  }
+  return RdsConn
+}
+
+func RdsPing() error {
+
+  //conn := RdsPool.Get()
+  conn := getConn()
   defer conn.Close()
 
   _, err := redis.String(conn.Do("PING"))
@@ -22,9 +52,10 @@ func Ping() error {
   return nil
 }
 
-func Get(key string) ([]byte, error) {
+func RdsGet(key string) ([]byte, error) {
 
-  conn := Pool.Get()
+  //conn := RdsPool.Get()
+  conn := getConn()
   defer conn.Close()
 
   var data []byte
@@ -35,9 +66,10 @@ func Get(key string) ([]byte, error) {
   return data, err
 }
 
-func Set(key string, value []byte) error {
+func RdsSet(key string, value []byte) error {
 
-  conn := Pool.Get()
+  //conn := RdsPool.Get()
+  conn := getConn()
   defer conn.Close()
 
   _, err := conn.Do("SET", key, value)
@@ -51,9 +83,10 @@ func Set(key string, value []byte) error {
   return err
 }
 
-func Exists(key string) (bool, error) {
+func RdsExists(key string) (bool, error) {
 
-  conn := Pool.Get()
+  //conn := RdsPool.Get()
+  conn := getConn()
   defer conn.Close()
 
   ok, err := redis.Bool(conn.Do("EXISTS", key))
@@ -63,18 +96,20 @@ func Exists(key string) (bool, error) {
   return ok, err
 }
 
-func Delete(key string) error {
+func RdsDelete(key string) error {
 
-  conn := Pool.Get()
+  //conn := RdsPool.Get()
+  conn := getConn()
   defer conn.Close()
 
   _, err := conn.Do("DEL", key)
   return err
 }
 
-func GetKeys(pattern string) ([]string, error) {
+func RdsGetKeys(pattern string) ([]string, error) {
 
-  conn := Pool.Get()
+  //conn := RdsPool.Get()
+  conn := getConn()
   defer conn.Close()
 
   iter := 0
@@ -97,9 +132,10 @@ func GetKeys(pattern string) ([]string, error) {
   return keys, nil
 }
 
-func Incr(counterKey string) (int, error) {
+func RdsIncr(counterKey string) (int, error) {
 
-  conn := Pool.Get()
+  //conn := RdsPool.Get()
+  conn := getConn()
   defer conn.Close()
 
   return redis.Int(conn.Do("INCR", counterKey))
