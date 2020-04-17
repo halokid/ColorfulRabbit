@@ -4,6 +4,7 @@ import (
   "bytes"
   "fmt"
   "io"
+  "net"
   "os"
   "os/exec"
   "strings"
@@ -59,6 +60,20 @@ func OsExecOut(cmdStr string)  {
   CheckError(err)
   cmdx.Wait()
   fmt.Println(errbuf.String())
+}
+
+func GetLcIp() string {
+  // 获取本机的IP， 非loopback IP
+  addrs, err := net.InterfaceAddrs()
+  CheckError(err, "get local IP error")
+  for _, addr := range addrs {
+    if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+      if ipnet.IP.To4() != nil {
+        return ipnet.IP.String()
+      }
+    }
+  }
+  return ""
 }
 
 
