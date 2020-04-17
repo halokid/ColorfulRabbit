@@ -3,6 +3,7 @@ package ColorfulRabbit
 import (
   "fmt"
   "github.com/garyburd/redigo/redis"
+  "log"
 )
 
 var (
@@ -27,6 +28,7 @@ func InitRdsPool(host, port, pwd string, db int) {
 func InitRdsConn(host, port, pwd string, db int) {
   var err error
   RdsConn, err = redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
+  log.Println("rdsconn --------------- ", RdsConn)
   CheckFatal(err, "----------------- redis conn error")
   RdsTyp = 1
   //return RdsConn, err
@@ -65,6 +67,23 @@ func RdsGet(key string) ([]byte, error) {
   }
   return data, err
 }
+
+func RdsHGetAll(key string, field ...string) (map[string]interface{}, error) {
+  conn := getConn()
+  defer conn.Close()
+  keys, err := redis.Values(conn.Do("HKEYS", key))
+  CheckError(err, "redis hmget error")
+  //return keys, err
+  vals, err := redis.Values(conn.Do("HVALS", key))
+
+  hmAll := make(map[string]interface{})
+  for i, key := range keys {
+    hmAll[string(key.([]uint8))] = vals[i]
+  }
+  return hmAll, nil
+}
+
+
 
 func RdsSet(key string, value []byte) error {
 
