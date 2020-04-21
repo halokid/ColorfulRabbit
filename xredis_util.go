@@ -26,7 +26,7 @@ func (x *XRedis) Close() error {
 
 func (x *XRedis) GetKeys(pattern string) ([]string, error) {
   conn := x.Rds
-  //defer conn.Close()
+  defer x.Close()
 
   iter := 0
   var keys []string
@@ -51,7 +51,7 @@ func (x *XRedis) GetKeys(pattern string) ([]string, error) {
 
 func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, error) {
   conn := x.Rds
-  //defer conn.Close()
+  defer x.Close()
   keys, err := redis.Values(conn.Do("HKEYS", key))
   CheckError(err, "redis hmget error")
   //return keys, err
@@ -67,6 +67,7 @@ func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, e
 
 func (x *XRedis) Get(key string) ([]byte, error) {
   conn := x.Rds
+  defer x.Close()
   var data []byte
   data, err := redis.Bytes(conn.Do("GET", key))
   if err != nil {
