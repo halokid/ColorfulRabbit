@@ -7,6 +7,7 @@ import (
   "fmt"
   "github.com/garyburd/redigo/redis"
   "log"
+  "time"
 )
 
 type XRedis struct {
@@ -15,9 +16,11 @@ type XRedis struct {
 }
 
 func NewXR(host, port, pwd string, db int) (*XRedis, error) {
-  Rds, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
+  //Rds, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
+  Rds, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db), redis.DialConnectTimeout(2 * time.Second))
+  //Rds, err := redis.DialTimeout("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
   CheckError(err, "redis newconn err")
-  return &XRedis{ Rds: Rds}, nil
+  return &XRedis{ Rds: Rds}, err
 }
 
 func (x *XRedis) Close() error {
