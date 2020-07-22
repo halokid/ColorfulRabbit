@@ -67,8 +67,8 @@ func (r *runner) receiver() {
 }
 
 func newRunner() *runner {
-  conn, err := redis.Dial("tcp", "172.20.71.25:6379",
-    redis.DialPassword("7wUZcd0#"), redis.DialDatabase(4))
+  conn, err := redis.Dial("tcp", "8.8.8.8:222",
+    redis.DialPassword("xxxxxx"), redis.DialDatabase(4))
   if err != nil {
     log.Fatal(err)
   }
