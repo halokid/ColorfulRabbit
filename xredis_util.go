@@ -57,7 +57,7 @@ func (x *XRedis) GetConn() redis.Conn {
 func (x *XRedis) GetKey(pattern string) ([]string, error) {
   //conn := x.Rds
   conn := x.GetConn()
-  //defer x.Close()
+  defer conn.Close()
 
   iter := 0
   var keys []string
@@ -87,7 +87,7 @@ func (x *XRedis) GetKey(pattern string) ([]string, error) {
 func (x *XRedis) GetKeys(pattern string) ([]string, error) {
   conn := x.GetConn()
   //conn := x.Rds
-  //defer x.Close()
+  defer conn.Close()
 
   iter := 0
   var keys []string
@@ -116,7 +116,7 @@ func (x *XRedis) XKeyExist(pattern string) ([]string, error) {
   // scan判断key是否存在
   //conn := x.Rds
   conn := x.GetConn()
-  //defer x.Close()
+  defer conn.Close()
 
   iter := 0
   var keys []string
@@ -149,7 +149,8 @@ func (x *XRedis) XKeyExist(pattern string) ([]string, error) {
 func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, error) {
   //conn := x.Rds
   conn := x.GetConn()
-  //defer x.Close()
+  defer conn.Close()
+
   keys, err := redis.Values(conn.Do("HKEYS", key))
   CheckError(err, "redis hmget error")
   //return keys, err
@@ -166,7 +167,8 @@ func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, e
 func (x *XRedis) Get(key string) ([]byte, error) {
   //conn := x.Rds
   conn := x.GetConn()
-  //defer x.Close()
+  defer conn.Close()
+
   var data []byte
   data, err := redis.Bytes(conn.Do("GET", key))
   if err != nil {
@@ -178,7 +180,8 @@ func (x *XRedis) Get(key string) ([]byte, error) {
 func (x *XRedis) Set(key string, val string) ([]byte, error) {
   //conn := x.Rds
   conn := x.GetConn()
-  //defer x.Close()
+  defer conn.Close()
+
   var data []byte
   data, err := redis.Bytes(conn.Do("SET", key, val))
   if err != nil {
@@ -190,6 +193,8 @@ func (x *XRedis) Set(key string, val string) ([]byte, error) {
 func (x *XRedis) HSetAll(key string, m map[string]interface{}) error {
   //conn := x.Rds
   conn := x.GetConn()
+  defer conn.Close()
+
   _, err := conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(m)...)
   CheckError(err, "redis HSetAll error")
   return err
