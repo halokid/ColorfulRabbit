@@ -12,7 +12,7 @@ import (
 
 type XRedis struct {
   Rds       redis.Conn
-  RdsPool   redis.Pool
+  RdsPool   *redis.Pool
 }
 
 func NewXR(host, port, pwd string, db int) (*XRedis, error) {
@@ -23,13 +23,40 @@ func NewXR(host, port, pwd string, db int) (*XRedis, error) {
   return &XRedis{ Rds: Rds}, err
 }
 
+func NewXrPool(host, port, pwd string, db int) (*XRedis, error) {
+  rdsPool := &redis.Pool{
+    MaxIdle:          20,
+    MaxActive:        7000,
+    IdleTimeout:      60 * time.Second,
+    Wait:             true,
+    Dial: func() (redis.Conn, error) {
+      conn, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd),
+        redis.DialDatabase(db), redis.DialConnectTimeout(3 * time.Second))
+      if err != nil {
+        CheckError(err, "redis conn pool err")
+        return nil, err
+      }
+      return conn, err
+    },
+  }
+  return &XRedis{RdsPool:  rdsPool}, nil
+}
+
 func (x *XRedis) Close() error {
   x.Rds.Close()
   return nil
 }
 
+func (x *XRedis) GetConn() redis.Conn {
+  if x.Rds != nil {
+    return x.Rds
+  }
+  return x.RdsPool.Get()
+}
+
 func (x *XRedis) GetKey(pattern string) ([]string, error) {
-  conn := x.Rds
+  //conn := x.Rds
+  conn := x.GetConn()
   //defer x.Close()
 
   iter := 0
@@ -58,7 +85,8 @@ func (x *XRedis) GetKey(pattern string) ([]string, error) {
 }
 
 func (x *XRedis) GetKeys(pattern string) ([]string, error) {
-  conn := x.Rds
+  conn := x.GetConn()
+  //conn := x.Rds
   //defer x.Close()
 
   iter := 0
@@ -86,7 +114,8 @@ func (x *XRedis) GetKeys(pattern string) ([]string, error) {
 
 func (x *XRedis) XKeyExist(pattern string) ([]string, error) {
   // scan判断key是否存在
-  conn := x.Rds
+  //conn := x.Rds
+  conn := x.GetConn()
   //defer x.Close()
 
   iter := 0
@@ -118,7 +147,8 @@ func (x *XRedis) XKeyExist(pattern string) ([]string, error) {
 
 
 func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, error) {
-  conn := x.Rds
+  //conn := x.Rds
+  conn := x.GetConn()
   //defer x.Close()
   keys, err := redis.Values(conn.Do("HKEYS", key))
   CheckError(err, "redis hmget error")
@@ -134,18 +164,32 @@ func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, e
 
 
 func (x *XRedis) Get(key string) ([]byte, error) {
-  conn := x.Rds
+  //conn := x.Rds
+  conn := x.GetConn()
   //defer x.Close()
   var data []byte
   data, err := redis.Bytes(conn.Do("GET", key))
   if err != nil {
-    return data, fmt.Errorf("error getting key %s: %v", key, err)
+    return data, fmt.Errorf("error get key %s: %v", key, err)
+  }
+  return data, err
+}
+
+func (x *XRedis) Set(key string, val string) ([]byte, error) {
+  //conn := x.Rds
+  conn := x.GetConn()
+  //defer x.Close()
+  var data []byte
+  data, err := redis.Bytes(conn.Do("SET", key, val))
+  if err != nil {
+    return data, fmt.Errorf("error set key %s: %v", key, err)
   }
   return data, err
 }
 
 func (x *XRedis) HSetAll(key string, m map[string]interface{}) error {
-  conn := x.Rds
+  //conn := x.Rds
+  conn := x.GetConn()
   _, err := conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(m)...)
   CheckError(err, "redis HSetAll error")
   return err
