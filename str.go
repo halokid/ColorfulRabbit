@@ -17,3 +17,15 @@ func GetSpIdx(s string, sep string, idx int) string {
   }
   return sp[idx]
 }
+
+func FirstToUpper(str string) string {
+  // 首写字符大写
+  if len(str) < 1 {
+    return ""
+  }
+  strArry := []rune(str)
+  if strArry[0] >= 97 && strArry[0] <= 122  {
+    strArry[0] -=  32
+  }
+  return string(strArry)
+}
