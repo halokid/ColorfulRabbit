@@ -68,15 +68,17 @@ func (x *XRedis) GetKey(pattern string) ([]string, error) {
       return keys, fmt.Errorf("error retrieving '%s' keys", pattern)
     }
 
+    log.Printf("arr 0 ------------ %+v", string(arr[0].([]uint8)))
     iter, _ = redis.Int(arr[0], nil)
     k, _ := redis.Strings(arr[1], nil)
+    log.Printf("k ------------ %+v", k)
     keys = append(keys, k...)
 
-    if iter == 0 {
+    if iter == 0 {      // iter为游标， 为0则代表遍历结束
       break
     }
 
-    if len(k) > 0 {
+    if len(k) > 0 {       // 当命中一个key，退出
       break
     }
   }
@@ -198,6 +200,60 @@ func (x *XRedis) HSetAll(key string, m map[string]interface{}) error {
   _, err := conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(m)...)
   CheckError(err, "redis HSetAll error")
   return err
+}
+
+func (x *XRedis) GetRangeKeys(pattern string, start, end int) {
+
+  conn := x.GetConn()
+  //conn := x.Rds
+  defer conn.Close()
+
+  //iter := 0
+  tmp := start
+  var keys []string
+  for {
+    //arr, err := redis.Values(conn.Do("SCAN", iter, "MATCH", pattern))
+    arr, err := redis.Values(conn.Do("SCAN", start, "COUNT", end, "MATCH", pattern))
+    if err != nil {
+      log.Println(err)
+      //return keys, fmt.Errorf("error retrieving '%s' keys", pattern)
+    }
+
+    start, _ = redis.Int(arr[0], nil)
+    log.Println("start ----------------", start)
+    k, _ := redis.Strings(arr[1], nil)
+    keys = append(keys, k...)
+
+    if start != tmp {
+      break
+    }
+  }
+  log.Println("len keys ----------------", len(keys))
+  log.Println("keys ----------------", keys)
+
+  //return keys, nil
+}
+
+func (x *XRedis) PipeGet(keys []string) [][]byte {
+  // piple方式批量get
+  //conn := x.Rds
+  conn := x.GetConn()
+  defer conn.Close()
+
+  var bs [][]byte
+
+  for _, k := range keys {
+    err := conn.Send("GET", k)
+    CheckError(err)
+  }
+  conn.Flush()
+  for i := 0; i < len(keys); i++ {
+    v, err :=conn.Receive()
+    CheckError(err)
+    //log.Printf("v --------- %+v", string(v.([]byte)))
+    bs = append(bs, v.([]byte))
+  }
+  return bs
 }
 
 
