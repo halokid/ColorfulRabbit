@@ -68,10 +68,10 @@ func (x *XRedis) GetKey(pattern string) ([]string, error) {
       return keys, fmt.Errorf("error retrieving '%s' keys", pattern)
     }
 
-    log.Printf("arr 0 ------------ %+v", string(arr[0].([]uint8)))
+    //log.Printf("arr 0 ------------ %+v", string(arr[0].([]uint8)))
     iter, _ = redis.Int(arr[0], nil)
     k, _ := redis.Strings(arr[1], nil)
-    log.Printf("k ------------ %+v", k)
+    //log.Printf("k ------------ %+v", k)
     keys = append(keys, k...)
 
     if iter == 0 {      // iter为游标， 为0则代表遍历结束
@@ -228,8 +228,8 @@ func (x *XRedis) GetRangeKeys(pattern string, start, end int) {
       break
     }
   }
-  log.Println("len keys ----------------", len(keys))
-  log.Println("keys ----------------", keys)
+  //log.Println("len keys ----------------", len(keys))
+  //log.Println("keys ----------------", keys)
 
   //return keys, nil
 }
