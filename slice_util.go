@@ -31,3 +31,57 @@ func RmRepeatSlcInter(slc []interface{}) []interface{} {
 }
 
 
+func Union(slice1, slice2 []string) []string {
+  //求并集
+  m := make(map[string]int)
+  for _, v := range slice1 {
+    m[v]++
+  }
+
+  for _, v := range slice2 {
+    times, _ := m[v]
+    if times == 0 {
+      slice1 = append(slice1, v)
+    }
+  }
+  return slice1
+}
+
+func Intersect(slice1, slice2 []string) []string {
+  //求交集
+  m := make(map[string]int)
+  nn := make([]string, 0)
+  for _, v := range slice1 {
+    m[v]++
+  }
+
+  for _, v := range slice2 {
+    times, _ := m[v]
+    if times == 1 {
+      nn = append(nn, v)
+    }
+  }
+  return nn
+}
+
+func Difference(slice1, slice2 []string) []string {
+  //求差集 slice1减去交集
+  m := make(map[string]int)
+  nn := make([]string, 0)
+  inter := Intersect(slice1, slice2)
+  for _, v := range inter {
+    m[v]++
+  }
+
+  for _, value := range slice1 {
+    times, _ := m[value]
+    if times == 0 {
+      nn = append(nn, value)
+    }
+  }
+  return nn
+}
+
+
+
+
