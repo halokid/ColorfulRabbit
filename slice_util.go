@@ -82,6 +82,15 @@ func Difference(slice1, slice2 []string) []string {
   return nn
 }
 
+func InSlice(find string, sl []string) bool {
+  // 判断slice中是否存在
+  for _, v := range sl {
+    if find == v {
+      return true
+    }
+  }
+  return false
+}
 
 
 
