@@ -33,7 +33,7 @@ func NewXrPool(host, port, pwd string, db int) (*XRedis, error) {
       conn, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd),
         redis.DialDatabase(db), redis.DialConnectTimeout(3 * time.Second))
       if err != nil {
-        CheckFatal(err, "redis conn pool err")
+        CheckFatal(err, "redis服务不可用")
         return nil, err
       }
       return conn, err
