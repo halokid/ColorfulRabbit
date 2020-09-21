@@ -23,7 +23,9 @@ func CheckError(err error, output ...interface{}) {
 func CheckFatal(err error, output ...interface{}) {
   if err != nil {
     log.Printf("[FATAL] %v -------------- %v\n", err, output)
-    os.Exit(500)
+    //os.Exit(500)
+    log.Println("Redis服务不可用")
+    panic(err)
   }
 }
 
