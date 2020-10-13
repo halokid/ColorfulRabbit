@@ -92,5 +92,11 @@ func InSlice(find string, sl []string) bool {
   return false
 }
 
+func ReverseSl(slx []interface{}) []interface{} {
+  for i, j := 0, len(slx) - 1; i < j; i, j = i+1, j-1 {
+    slx[i], slx[j] = slx[j], slx[i]
+  }
+  return slx
+}
 
 
