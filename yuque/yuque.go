@@ -3,7 +3,7 @@ package yuque
 import (
   "github.com/halokid/ColorfulRabbit"
   "github.com/mozillazg/request"
-  "log"
+  //"log"
   "net/http"
 )
 
