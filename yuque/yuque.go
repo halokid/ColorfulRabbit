@@ -21,18 +21,19 @@ func NewYuque() *Yuque {
   }
 }
 
-func (y *Yuque) GetDoc(slug string) string {
+func (y *Yuque) GetDoc(docId, slug string) string {
   // 获取文档
-  api := y.GenApi("getDoc", slug)
+  api := y.GenApi("getDoc", docId, slug)
+  //log.Printf("api url------------------ %+v", api)
   bodyHtml := y.DoGet(api)
   return bodyHtml
 }
 
-func (y *Yuque) GenApi(act string, slug string) string {
+func (y *Yuque) GenApi(act string, docId, slug string) string {
   // 生产API地址
   switch act {
   case "getDoc":
-    return y.Enpoint + "repos/" + y.NameSpace + "docs/" + slug
+    return y.Enpoint + "repos/" + y.NameSpace + docId + "/docs/" + slug
   default:
     return ""
   }
@@ -45,7 +46,7 @@ func (y *Yuque) DoGet(api string) string {
   y.Auth(req)
   rsp, err := req.Get(api)
   ColorfulRabbit.CheckError(err, "DoGet get api Error")
-  log.Printf("rsp status ----------- %+v", rsp.StatusCode)
+  //log.Printf("rsp status ----------- %+v", rsp.StatusCode)
   js, err := rsp.Json()
   ColorfulRabbit.CheckError(err, "DoGet body2json Error")
   bodyHtml := js.Get("data").Get("body_html").MustString()
