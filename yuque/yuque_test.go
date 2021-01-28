@@ -6,7 +6,7 @@ import (
 
 func TestYuque_GenApi(t *testing.T) {
   y := NewYuque()
-  getDocApi := y.GenApi("getDoc", "rmgv7k")
+  getDocApi := y.GenApi("getDoc", "kb", "rmgv7k")
   t.Log("getDocApi ------------", getDocApi)
 }
 
