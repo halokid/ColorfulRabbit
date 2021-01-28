@@ -165,6 +165,15 @@ func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, e
   return hmAll, nil
 }
 
+func (x *XRedis) HGet(key string, field string) (string, error) {
+  //conn := x.Rds
+  conn := x.GetConn()
+  defer conn.Close()
+
+  res, err := redis.String(conn.Do("HGET", key, field))
+  //log.Println("res -------------", res, err)
+  return res, err
+}
 
 func (x *XRedis) Get(key string) ([]byte, error) {
   //conn := x.Rds
