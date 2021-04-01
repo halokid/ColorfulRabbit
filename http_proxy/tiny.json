@@ -1,0 +1,7 @@
+{
+	"port": "8080",
+	"target": "http://127.0.0.1:9982",
+	"cache_folder": "./cache/",
+	"debug_logging": true,
+	"max_cache_item_size": 5
+}
