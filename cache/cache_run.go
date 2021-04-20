@@ -1,10 +1,16 @@
 package main
 
 import (
+  "crypto/md5"
+  "fmt"
   "github.com/gin-gonic/gin"
   lru "github.com/hashicorp/golang-lru"
+  "hash/fnv"
+  "math/rand"
+  "net/http"
   "os"
   "sync"
+  "time"
 )
 
 type Cache struct {
@@ -35,8 +41,56 @@ func init() {
 func main() {
   r := gin.Default()
   gin.DefaultWriter = os.Stdout
-
+  r.GET("/ping", func(c *gin.Context) {
+    c.String(200, "pong")
+  })
+  r.GET("/compute", Compute)
+  r.Run(":8080")
 }
+
+func Compute(c *gin.Context) {
+  // 获取已备份版本
+  key := c.Query("key")
+
+  mutexIdx := Hash64(key) % cacheSize
+  cache.mutexBucket[mutexIdx].Lock()
+  defer cache.mutexBucket[mutexIdx].Unlock()
+
+  val, ok := cache.cache.Get(key)
+  if ok {     // 如果命中key
+    c.JSON(http.StatusOK, val)
+    return
+  }
+
+  value, err := compute(key)
+  if err != nil {
+    c.JSON(http.StatusInternalServerError, err.Error())
+    return
+  }
+
+  updateCache(key, value)
+}
+
+// 根据key计算出一串hash值，根据这串hash值计算出一个数字, 只要key不同，这串数字就不会相同
+func Hash64(key string) uint64 {
+  h := fnv.New64a()
+  h.Write([]byte(key))
+  return h.Sum64()
+}
+
+// 用key计算缓存的值
+func compute(key string) (string, error) {
+  sleep := rand.Intn(10)
+  fmt.Printf("[key: %s], sleep %d\n", key, sleep)
+  // 随机sleep， 模拟不同key的计算时长
+  time.Sleep(time.Duration(sleep) * time.Second)
+  return fmt.Sprintf("0x%x", md5.Sum([]byte(key))), nil
+}
+
+func updateCache(key, val string) {
+  cache.cache.Add(key, val)
+}
+
 
 
 
