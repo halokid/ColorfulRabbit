@@ -13,6 +13,7 @@ import (
 type XRedis struct {
   Rds       redis.Conn
   RdsPool   *redis.Pool
+  CloseNotAtOnece  bool
 }
 
 func NewXR(host, port, pwd string, db int) (*XRedis, error) {
@@ -168,7 +169,9 @@ func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, e
 func (x *XRedis) HGet(key string, field string) (string, error) {
   //conn := x.Rds
   conn := x.GetConn()
-  defer conn.Close()
+  if !x.CloseNotAtOnece {
+    defer conn.Close()
+  }
 
   res, err := redis.String(conn.Do("HGET", key, field))
   //log.Println("res -------------", res, err)
@@ -178,7 +181,9 @@ func (x *XRedis) HGet(key string, field string) (string, error) {
 func (x *XRedis) Get(key string) ([]byte, error) {
   //conn := x.Rds
   conn := x.GetConn()
-  defer conn.Close()
+  if !x.CloseNotAtOnece {
+    defer conn.Close()
+  }
 
   var data []byte
   data, err := redis.Bytes(conn.Do("GET", key))
