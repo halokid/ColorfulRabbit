@@ -55,6 +55,7 @@ func (x *XRedis) GetConn() redis.Conn {
   return x.RdsPool.Get()
 }
 
+// todo: just get one key
 func (x *XRedis) GetKey(pattern string) ([]string, error) {
   //conn := x.Rds
   conn := x.GetConn()
@@ -87,6 +88,7 @@ func (x *XRedis) GetKey(pattern string) ([]string, error) {
   return keys, nil
 }
 
+// todo: get all match keys
 func (x *XRedis) GetKeys(pattern string) ([]string, error) {
   conn := x.GetConn()
   //conn := x.Rds
