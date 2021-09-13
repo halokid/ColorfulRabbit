@@ -44,6 +44,7 @@ func NewXrPool(host, port, pwd string, db int) (*XRedis, error) {
 }
 
 func (x *XRedis) Close() error {
+  // todo: 这里执行的是  x.RdsPool.Close() 方法, 因为 GetConn 返回的必然是一个 x.RdsPool.Get()， 在初始化 rdsPool 的时候， 根本就没有设置 x.Rds 的数据
   x.Rds.Close()
   return nil
 }
