@@ -279,7 +279,7 @@ func (x *XRedis) DelKeys(keys []string) error {
   for _, key := range keys {
     res, err := conn.Do("DEL", key)
     CheckError(err, "delete key", key, "fail error")
-    log.Println("DelKeys ---", key, "res ---", res)
+    log.Println("DelKeys ---", key, ", res ---", res)
   }
   return nil
 }
