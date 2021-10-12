@@ -50,7 +50,7 @@ func (x *XRedis) Close() error {
 }
 
 func (x *XRedis) GetConn() redis.Conn {
-  if x.Rds != nil {
+  if x.Rds != nil {     // todo: two case here, when we use redisPoll, x.Rds is nil, the NewXrPool or NewXR decide this
     return x.Rds
   }
   return x.RdsPool.Get()
@@ -60,7 +60,7 @@ func (x *XRedis) GetConn() redis.Conn {
 func (x *XRedis) GetKey(pattern string) ([]string, error) {
   //conn := x.Rds
   conn := x.GetConn()
-  defer conn.Close()
+  defer conn.Close()      // todo: if RedisPool, then put back to pool,  if redis.Conn, then close the conn
 
   iter := 0
   var keys []string
@@ -271,6 +271,17 @@ func (x *XRedis) PipeGet(keys []string) [][]byte {
     bs = append(bs, v.([]byte))
   }
   return bs
+}
+
+func (x *XRedis) DelKeys(keys []string) error {
+  conn := x.GetConn()
+  defer conn.Close()
+  for _, key := range keys {
+    res, err := conn.Do("DEL", key)
+    CheckError(err, "delete key", key, "fail error")
+    log.Println("DelKeys ---", key, "res ---", res)
+  }
+  return nil
 }
 
 
