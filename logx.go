@@ -3,8 +3,9 @@ package ColorfulRabbit
 日志类使用函数
  */
 import (
-  "log"
   "os"
+
+  logs "github.com/halokid/rpcx-plus/log"
 )
 
 type Logx struct {
@@ -15,14 +16,16 @@ type Logx struct {
 // 普通错误检查
 func CheckError(err error, output ...interface{}) {
   if err != nil {
-    log.Printf("[ERROR] %v --------------- %v\n", err, output)
+    //log.Printf("[ERROR] %v --------------- %v\n", err, output)
+    logs.Errorf("[ERROR] %v --------------- %v\n", err, output)
   }
 }
 
 // 致命错误检查
 func CheckFatal(err error, output ...interface{}) {
   if err != nil {
-    log.Printf("[FATAL] %v -------------- %v\n", err, output)
+    //log.Printf("[FATAL] %v -------------- %v\n", err, output)
+    logs.Errorf("[FATAL] %v -------------- %v\n", err, output)
     //os.Exit(500)
     //panic(err)
     os.Exit(500)
@@ -32,7 +35,8 @@ func CheckFatal(err error, output ...interface{}) {
 // 需要输出的调试信息
 func (lgx *Logx) DebugPrint(output ...interface{}) {
   if lgx.DebugFlag {
-    log.Printf("[DEBUG] ---------------- %v\n", output)
+    //log.Printf("[DEBUG] ---------------- %v\n", output)
+    logs.Errorf("[DEBUG] ---------------- %v\n", output)
   }
 
   if lgx.LogFlFlag {
