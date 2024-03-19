@@ -20,7 +20,7 @@ func NewXR(host, port, pwd string, db int) (*XRedis, error) {
   //Rds, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
   Rds, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db), redis.DialConnectTimeout(2 * time.Second))
   //Rds, err := redis.DialTimeout("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
-  CheckError(err, "redis newconn err")
+  log.Println(err, "redis newconn err")
   return &XRedis{ Rds: Rds}, err
 }
 
@@ -34,7 +34,7 @@ func NewXrPool(host, port, pwd string, db int) (*XRedis, error) {
       conn, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd),
         redis.DialDatabase(db), redis.DialConnectTimeout(3 * time.Second))
       if err != nil {
-        CheckFatal(err, "redis服务不可用")
+        log.Println(err, "redis服务不可用")
         return nil, err
       }
       return conn, err
@@ -158,7 +158,7 @@ func (x *XRedis) HGetAll(key string, field ...string) (map[string]interface{}, e
   defer conn.Close()
 
   keys, err := redis.Values(conn.Do("HKEYS", key))
-  CheckError(err, "redis hmget error")
+  log.Println(err, "redis hmget error")
   //return keys, err
   vals, err := redis.Values(conn.Do("HVALS", key))
 
@@ -215,7 +215,7 @@ func (x *XRedis) HSetAll(key string, m map[string]interface{}) error {
   defer conn.Close()
 
   _, err := conn.Do("HMSET", redis.Args{}.Add(key).AddFlat(m)...)
-  CheckError(err, "redis HSetAll error")
+  log.Println(err, "redis HSetAll error")
   return err
 }
 
@@ -261,12 +261,12 @@ func (x *XRedis) PipeGet(keys []string) [][]byte {
 
   for _, k := range keys {
     err := conn.Send("GET", k)
-    CheckError(err)
+    log.Println(err)
   }
   conn.Flush()
   for i := 0; i < len(keys); i++ {
     v, err :=conn.Receive()
-    CheckError(err)
+    log.Println(err)
     //log.Printf("v --------- %+v", string(v.([]byte)))
     bs = append(bs, v.([]byte))
   }
@@ -278,7 +278,7 @@ func (x *XRedis) DelKeys(keys []string) error {
   defer conn.Close()
   for _, key := range keys {
     res, err := conn.Do("DEL", key)
-    CheckError(err, "delete key", key, "fail error")
+    log.Println(err, "delete key", key, "fail error")
     log.Println("DelKeys ---", key, ", res ---", res)
   }
   return nil

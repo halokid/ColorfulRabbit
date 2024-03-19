@@ -13,7 +13,7 @@ import (
 func StrToJson(s string) *simplejson.Json {
   // 字符串转json
   sJs, err := simplejson.NewJson([]byte(s))
-  CheckFatal(err, "string change to json error")
+  log.Println(err, "string change to json error")
   return sJs
 }
 
@@ -22,7 +22,7 @@ func IntToInt64(i int) int64 {
   // int转int64
   iStr := strconv.Itoa(i)   // int to string
   iInt64, err := strconv.ParseInt(iStr, 10, 64)   // string to int64
-  CheckError(err)
+  log.Println(err)
   return iInt64
 }
 
@@ -50,7 +50,7 @@ func Int64ToStr(i int64) string {
 func StrToFlo64(s string) float64 {
   // string 转  float64
   f, err := strconv.ParseFloat(s, 64)
-  CheckError(err)
+  log.Println(err)
   return f
 }
 
@@ -65,7 +65,7 @@ func IntToFlo64(i int) float64 {
 func StrToInt(s string) int {
   // string 转 int
   i, err := strconv.Atoi(s)
-  CheckError(err)
+  log.Println(err)
   return i
 }
 

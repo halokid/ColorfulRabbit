@@ -50,14 +50,14 @@ func OsExecOut(cmdStr string)  {
   //os.Exit(11)
   cmdx := exec.Command(cmdSplTr[0], cmdArgs...)
   stdout, err := cmdx.StdoutPipe()
-  CheckFatal(err, " 执行命令", cmdStr, "输出失败")
+  log.Println(err, " 执行命令", cmdStr, "输出失败")
 
   var errbuf bytes.Buffer
   cmdx.Stderr = &errbuf
   err = cmdx.Start()
-  CheckError(err)
+  log.Println(err)
   _, err = io.Copy(os.Stdout, stdout)
-  CheckError(err)
+  log.Println(err)
   cmdx.Wait()
   fmt.Println(errbuf.String())
 }
@@ -65,7 +65,7 @@ func OsExecOut(cmdStr string)  {
 func GetLcIp() string {
   // 获取本机的IP， 非loopback IP
   addrs, err := net.InterfaceAddrs()
-  CheckError(err, "get local IP error")
+  log.Println(err, "get local IP error")
   for _, addr := range addrs {
     if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
       if ipnet.IP.To4() != nil {

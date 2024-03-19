@@ -18,7 +18,7 @@ func InitRdsPool(host, port, pwd string, db int) {
     MaxActive:      10000,
     Dial: func() (redis.Conn, error) {
       conn, err := redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
-      CheckFatal(err, "----------------- redis pool error")
+      log.Println(err, "----------------- redis pool error")
       return conn, err
     },
   }
@@ -29,7 +29,7 @@ func InitRdsConn(host, port, pwd string, db int) {
   var err error
   RdsConn, err = redis.Dial("tcp", host + ":" + port, redis.DialPassword(pwd), redis.DialDatabase(db))
   log.Println("rdsconn --------------- ", RdsConn)
-  CheckFatal(err, "----------------- redis conn error")
+  log.Println(err, "----------------- redis conn error")
   RdsTyp = 1
   //return RdsConn, err
 }
@@ -72,7 +72,7 @@ func RdsHGetAll(key string, field ...string) (map[string]interface{}, error) {
   conn := getConn()
   defer conn.Close()
   keys, err := redis.Values(conn.Do("HKEYS", key))
-  CheckError(err, "redis hmget error")
+  log.Println(err, "redis hmget error")
   //return keys, err
   vals, err := redis.Values(conn.Do("HVALS", key))
 
