@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func main() {
+func c3() {
   ch := make(chan int)
   for i := 0; i < 10; i++ {
     go func(j int) {

@@ -1,14 +1,14 @@
 package main
 
 import (
-  "context"
-  "github.com/pkg/errors"
-  "sync"
+	"context"
+	"errors"
+	"sync"
 )
 
 /**
 context的使用场景之 RPC调用
- */
+*/
 
 func Rpc(ctx context.Context, url string) error {
   result := make(chan int)

@@ -1,8 +1,8 @@
 package main
 
 import (
-  "context"
-  "net/http"
+	"context"
+	"net/http"
 )
 
 type Fookey string
@@ -39,7 +39,7 @@ func test(w http.ResponseWriter, r *http.Request) {
   w.Write([]byte(GetUserName(r.Context())))
 }
 
-func main() {
+func c2() {
   http.Handle("/", foo(test))
   http.ListenAndServe(":8080", nil)
 }
