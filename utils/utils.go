@@ -1,8 +1,9 @@
 package until
 
 import (
-	"ColorfulRabbit/logger"
 	"encoding/json"
+
+	"github.com/halokid/ColorfulRabbit/logger"
 )
 
 func MapToString[T string | int | interface{}](m map[string]T) string {

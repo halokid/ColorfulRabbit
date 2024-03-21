@@ -1,4 +1,4 @@
-module  github.com/halokid/ColorfulRabbit
+module github.com/halokid/ColorfulRabbit
 
 go 1.20
 
