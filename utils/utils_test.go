@@ -9,3 +9,8 @@ func TestMapToString(t *testing.T) {
   ms := MapToString(m)
   t.Logf("ms -->>> %+v", ms)
 }
+
+func TestRunRootPath(t *testing.T) {
+  path := RunRootPath()
+  t.Logf("%+v", path)
+}
