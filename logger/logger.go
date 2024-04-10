@@ -3,14 +3,13 @@ package logger
 import (
 	"io"
 	"log"
-	"net/http"
 	"os"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-var Logger *zap.SugaredLogger
+// var Logger *zap.SugaredLogger
 
 /*
 func init() {
@@ -38,11 +37,23 @@ func init() {
 
 var SugarLogger *zap.SugaredLogger
 
-func InitLogger() {
+func InitLogger(logLevelInit string) {
     log.Println("-->>> Pkg logger init()")
     writeSyncer := getLogWriter()
     encoder := getEncoder()
-    core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
+    
+    logLevel := zapcore.DebugLevel
+    switch logLevelInit {
+    case "info":
+        logLevel = zapcore.InfoLevel
+    case "warn":
+        logLevel = zapcore.WarnLevel
+    case "error":
+        logLevel = zapcore.ErrorLevel
+    }
+
+    // core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
+    core := zapcore.NewCore(encoder, writeSyncer, logLevel)
 
     logger := zap.New(core)
     SugarLogger = logger.Sugar()
@@ -64,17 +75,6 @@ func getLogWriter() zapcore.WriteSyncer {
     ws := io.MultiWriter(file, os.Stdout)   // both console and file
     // return zapcore.AddSync(file)
     return zapcore.AddSync(ws)
-}
-
-func simpleHttpGet(url string) {
-    SugarLogger.Debugf("Trying to hit GET request for %s", url)
-    resp, err := http.Get(url)
-    if err != nil {
-        SugarLogger.Errorf("Error fetching URL %s : Error = %s", url, err)
-    } else {
-        SugarLogger.Infof("Success! statusCode = %s for URL %s", resp.Status, url)
-        resp.Body.Close()
-    }
 }
 
 
