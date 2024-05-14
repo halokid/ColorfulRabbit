@@ -40,9 +40,9 @@ func init() {
 
 var SugarLogger *zap.SugaredLogger
 
-func InitLogger(logLevelInit, logFolder, logFile, logExt string) {
+func InitLogger(logLevelInit, logFolder, logFile, logExt string, logBackupDur int) {
   log.Println("-->>> Pkg logger init()")
-  writeSyncer := getLogWriter(logFolder, logFile, logExt)
+  writeSyncer := getLogWriter(logFolder, logFile, logExt, logBackupDur)
   encoder := getEncoder()
 
   logLevel := zapcore.DebugLevel
@@ -72,20 +72,21 @@ func getEncoder() zapcore.Encoder {
   return zapcore.NewConsoleEncoder(config)
 }
 
-func getLogWriter(logFolder, logFile, logExt string) zapcore.WriteSyncer {
+func getLogWriter(logFolder, logFile, logExt string, logBackupDur int) zapcore.WriteSyncer {
   // file, _ := os.Create("./test.log")
   // file, _ := os.OpenFile("./log/runtime.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0744)
   file, _ := os.OpenFile(logFolder + logFile + logExt, os.O_CREATE|os.O_APPEND|os.O_RDWR, 0744)
   ws := io.MultiWriter(file, os.Stdout) // both console and file
 
-  go backupLog(logFolder, logFile, logExt)
+  go backupLog(logFolder, logFile, logExt, logBackupDur)
 
   // return zapcore.AddSync(file)
   return zapcore.AddSync(ws)
 }
 
-func backupLog(logFolder, logFile, logExt string) {
-  ticker := time.NewTicker( 60 * time.Second)
+func backupLog(logFolder, logFile, logExt string, logBackupDur int) {
+  // ticker := time.NewTicker( 60 * time.Second)
+  ticker := time.NewTicker( time.Duration(logBackupDur) * time.Second)
   for {
     select {
     case <-ticker.C:
