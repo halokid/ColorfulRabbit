@@ -2,16 +2,15 @@ package file
 
 import (
 	"bufio"
+	"log"
 	"os"
-	"strings"
-
-	"github.com/halokid/ColorfulRabbit/utils"
 )
 
-func readLogFile(logfile string) ([][]string, error) {
-  file, err := os.Open(logfile)
+func ReadFile(filepath string) ([]string, error) {
+  file, err := os.Open(filepath)
   if err != nil {
     return nil, err
+  }
 
   scanner := bufio.NewScanner(file)
   scanner.Split(bufio.ScanLines)
@@ -21,9 +20,12 @@ func readLogFile(logfile string) ([][]string, error) {
     text = append(text, scanner.Text())
   }
   file.Close()
+  log.Println("1:", len(text))
 
+  /*
   var lines [][]string
   for i, each_ln := range text {
+    log.Println("each line:", each_ln)
     if i > 0 {
       sl := strings.Split(each_ln, "|")
       sl = utils.RemoveEmptyElements(sl)
@@ -38,5 +40,8 @@ func readLogFile(logfile string) ([][]string, error) {
       }
     }
   }
-  return lines, nil
+  */
+  return text, nil
 }
+
+

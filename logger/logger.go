@@ -71,7 +71,7 @@ func getEncoder() zapcore.Encoder {
 
 func getLogWriter() zapcore.WriteSyncer {
     // file, _ := os.Create("./test.log")
-    file, _ := os.OpenFile("./runtime.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0744)
+    file, _ := os.OpenFile("./log/runtime.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0744)
     ws := io.MultiWriter(file, os.Stdout)   // both console and file
     // return zapcore.AddSync(file)
     return zapcore.AddSync(ws)
