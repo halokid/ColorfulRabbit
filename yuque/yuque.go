@@ -1,9 +1,8 @@
 package yuque
 
 import (
-  "github.com/halokid/ColorfulRabbit"
   "github.com/mozillazg/request"
-  //"log"
+  "log"
   "net/http"
 )
 
@@ -45,10 +44,10 @@ func (y *Yuque) DoGet(api string) string {
   req := request.NewRequest(c)
   y.Auth(req)
   rsp, err := req.Get(api)
-  ColorfulRabbit.CheckError(err, "DoGet get api Error")
+  log.Println(err, "DoGet get api Error")
   //log.Printf("rsp status ----------- %+v", rsp.StatusCode)
   js, err := rsp.Json()
-  ColorfulRabbit.CheckError(err, "DoGet body2json Error")
+  log.Println(err, "DoGet body2json Error")
   bodyHtml := js.Get("data").Get("body_html").MustString()
   return bodyHtml
 }
